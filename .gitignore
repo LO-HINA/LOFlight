@@ -1,0 +1,29 @@
+# Local experiments and generated output
+/probe/
+/output/
+/README.local.md
+/.runtime/
+*.log
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# IDE and operating system files
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db
+
+# Local credentials and saved browser sessions
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+/session.json
+/*-session.json

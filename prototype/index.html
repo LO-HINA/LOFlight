@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7fa">
+  <title>Travel · 机票比价</title>
+  <link rel="stylesheet" href="./assets/flight.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell top-inner">
+      <a class="brand" href="#search" aria-label="Travel 机票比价首页"><span class="brand-mark" aria-hidden="true">✈</span>Travel</a>
+      <nav class="main-nav" aria-label="页面导航">
+        <a class="nav-current" href="#search">机票比价</a>
+        <a href="#price-guide">报价说明</a>
+      </nav>
+      <a class="channel-nav" href="#sources"><span aria-hidden="true"></span>查价渠道</a>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-inner">
+        <h1 id="page-title">机票比价</h1>
+        <p>查同一趟航班的各平台票价。</p>
+      </div>
+    </section>
+    <section class="search-wrap" id="search" aria-label="机票搜索">
+      <div class="search-box">
+        <div class="search-options">
+          <span class="journey">单程</span>
+          <span>1 位成人</span>
+          <span>经济舱</span>
+        </div>
+        <form class="search-form" id="search-form">
+          <label class="field"><span>出发城市</span><input id="origin" name="origin" list="city-options" placeholder="城市名或代码" autocomplete="off" maxlength="80" required></label>
+          <button class="swap" id="swap" type="button" title="交换城市" aria-label="交换出发和到达城市">⇄</button>
+          <label class="field"><span>到达城市</span><input id="destination" name="destination" list="city-options" placeholder="城市名或代码" autocomplete="off" maxlength="80" required></label>
+          <label class="field date-field"><span>出发日期</span><input id="departure" name="departure" type="date" required></label>
+          <button class="primary" id="search-button" type="submit"><span class="search-icon" aria-hidden="true"></span><span id="search-label">实时查价</span></button>
+        </form>
+        <datalist id="city-options"></datalist>
+        <p class="form-message" id="file-hint" hidden>这是离线预览。<a href="http://127.0.0.1:8765/">打开本地查价页</a>即可查询实时价格。</p>
+        <p class="form-message" id="form-message" role="alert" hidden></p>
+      </div>
+      <div class="samples" id="samples" aria-label="切换历史样本"><span>历史样本</span></div>
+    </section>
+    <div class="workspace">
+      <section class="results" id="results" aria-labelledby="route-title">
+        <div class="result-head">
+          <div>
+            <div class="result-heading">
+              <h2 id="route-title">航班报价</h2>
+              <span class="mode-badge" id="mode-badge" hidden>历史样本</span>
+            </div>
+            <p id="result-status" role="status"></p>
+          </div>
+          <a href="#sources" class="mobile-sources">查价渠道</a>
+        </div>
+        <div class="filters" id="filters" aria-label="筛选与排序" hidden>
+          <div class="filter-group" role="group" aria-label="航班类型">
+            <button id="show-all" class="filter" type="button" aria-pressed="true">全部</button>
+            <button id="show-direct" class="filter" type="button" aria-pressed="false">仅直飞</button>
+            <button id="show-connecting" class="filter" type="button" aria-pressed="false">仅中转</button>
+            <button id="show-compared" class="filter" type="button" aria-pressed="false">多渠道报价</button>
+          </div>
+          <label class="sort-wrap">排序
+            <select id="sort-order" aria-label="排序方式">
+              <option value="price">价格优先</option>
+              <option value="duration">耗时优先</option>
+              <option value="departure">起飞时间</option>
+            </select>
+          </label>
+        </div>
+        <div class="cards" id="cards"></div>
+        <button class="filter more" id="show-more" type="button" hidden>显示更多航班</button>
+        <section class="panel route-references" id="route-references" aria-label="其他参考报价" hidden>
+          <h3>其他参考报价</h3>
+          <div id="reference-list"></div>
+        </section>
+        <p class="results-footnote">起降时间为当地时间。价格、税费和行李规则以原平台购票页为准。</p>
+      </section>
+      <aside class="sidebar" aria-label="报价来源与说明">
+        <section class="panel sources" id="sources">
+          <h3>查价渠道</h3>
+          <ul class="channels" id="channels"></ul>
+          <p class="panel-note" id="snapshot"></p>
+        </section>
+        <section class="panel policy" id="price-guide">
+          <h3>报价说明</h3>
+          <dl>
+            <dt>含税价</dt>
+            <dd>同一航班、同舱等的含税报价可直接比较。</dd>
+            <dt>参考价</dt>
+            <dd>含公开起价及税费待核实的报价，单独显示。</dd>
+            <dt>购票与售后</dt>
+            <dd>支付、出票和售后由购票平台处理。</dd>
+          </dl>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <script type="application/json" id="sample-data">[
+{"origin":"莫斯科","destination":"深圳","date":"2026-11-25","captured":"2026-11-18","flights":[{"numbers":["HU7986","HU7705"],"airline":"海南航空","departure":"20:05","arrival":"14:55","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":830,"stops":1,"via":"PEK","quotes":[{"seller":"同程旅行","price":2322.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/MOW-SZX?date=2026-11-25"},{"seller":"Trip.com","price":2411.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-25&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}],"reference":{"seller":"携程","price":2347.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-25&cabin=y&adult=1&child=0&infant=0"}},{"numbers":["HU766","HU7021"],"airline":"海南航空","departure":"12:25","arrival":"08:15","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":890,"stops":1,"via":"HAK","quotes":[{"seller":"同程旅行","price":2337.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/MOW-SZX?date=2026-11-25"},{"seller":"Trip.com","price":2416.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-25&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}],"reference":{"seller":"携程","price":2357.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-25&cabin=y&adult=1&child=0&infant=0"}},{"numbers":["HU7986","HU7707"],"airline":"海南航空","departure":"20:05","arrival":"16:55","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":950,"stops":1,"via":"PEK","quotes":[{"seller":"Trip.com","price":2396.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-25&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}],"reference":{"seller":"携程","price":2347.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-25&cabin=y&adult=1&child=0&infant=0"}},{"numbers":["HU766","HU7023"],"airline":"海南航空","departure":"12:25","arrival":"08:45","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":920,"stops":1,"via":"HAK","quotes":[{"seller":"Trip.com","price":2397.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-25&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}],"reference":{"seller":"携程","price":2357.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-25&cabin=y&adult=1&child=0&infant=0"}},{"numbers":["HU766","HU7027"],"airline":"海南航空","departure":"12:25","arrival":"00:15","arrivalDays":2,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":1850,"stops":1,"via":"HAK","quotes":[{"seller":"Trip.com","price":2406.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-25&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]},{"numbers":["CZ8372"],"airline":"南方航空","departure":"21:00","arrival":"11:55","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":595,"stops":0,"via":"","quotes":[{"seller":"Trip.com","price":2696.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-25&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"},{"seller":"同程旅行","price":3555.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/MOW-SZX?date=2026-11-25"}]}]},
+{"origin":"莫斯科","destination":"深圳","date":"2026-11-19","captured":"2026-11-18","flights":[{"numbers":["CZ8372"],"airline":"南方航空","departure":"03:05","arrival":"17:55","arrivalDays":0,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":590,"stops":0,"via":"","quotes":[{"seller":"同程旅行","price":2405.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/MOW-SZX?date=2026-11-19"},{"seller":"Trip.com","price":2783.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-19&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}],"reference":{"seller":"携程","price":2549.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-19&cabin=y&adult=1&child=0&infant=0"}},{"numbers":["CA714","CA3600"],"airline":"中国国航","departure":"22:05","arrival":"22:15","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":1150,"stops":1,"via":"URC","quotes":[{"seller":"Trip.com","price":2589.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-19&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}],"reference":{"seller":"携程","price":2436.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-19&cabin=y&adult=1&child=0&infant=0"}},{"numbers":["CA714","CA4717"],"airline":"中国国航","departure":"22:05","arrival":"13:20","arrivalDays":2,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":2055,"stops":1,"via":"URC","quotes":[{"seller":"Trip.com","price":2674.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-19&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]},{"numbers":["CA714","CA7946"],"airline":"中国国航","departure":"22:05","arrival":"21:10","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":1085,"stops":1,"via":"URC","quotes":[{"seller":"Trip.com","price":2843.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-19&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}],"reference":{"seller":"携程","price":2656.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-19&cabin=y&adult=1&child=0&infant=0"}},{"numbers":["HU7986","HU7705"],"airline":"海南航空","departure":"20:05","arrival":"15:00","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":835,"stops":1,"via":"PEK","quotes":[{"seller":"同程旅行","price":3403.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/MOW-SZX?date=2026-11-19"},{"seller":"Trip.com","price":3707.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-19&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]},{"numbers":["CA754","CA1367"],"airline":"中国国航","departure":"17:25","arrival":"12:25","arrivalDays":1,"originAirport":"SVO 谢列梅捷沃","destinationAirport":"SZX 宝安","duration":840,"stops":1,"via":"PEK","quotes":[{"seller":"Trip.com","price":3481.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=mow&acity=szx&ddate=2026-11-19&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"},{"seller":"同程旅行","price":3588.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/MOW-SZX?date=2026-11-19"}],"reference":{"seller":"携程","price":3246.0,"url":"https://flights.ctrip.com/online/list/oneway-mow-szx?depdate=2026-11-19&cabin=y&adult=1&child=0&infant=0"}}]},
+{"origin":"广州","destination":"东京","date":"2026-12-01","captured":"2026-11-15","flights":[{"numbers":["VN507","VN310"],"airline":"越南航空","departure":"16:25","arrival":"07:00","arrivalDays":1,"originAirport":"CAN 白云","destinationAirport":"NRT 成田","duration":815,"stops":1,"via":"HAN","quotes":[{"seller":"携程","price":1402.0,"note":"含税 · 搜索页","url":"https://flights.ctrip.com/online/list/oneway-can-tyo?depdate=2026-12-01&cabin=y&adult=1&child=0&infant=0"},{"seller":"Trip.com","price":1473.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=can&acity=tyo&ddate=2026-12-01&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"},{"seller":"同程旅行","price":1504.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/CAN-TYO?date=2026-12-01"}]},{"numbers":["MF8302","MF815"],"airline":"厦门航空","departure":"18:30","arrival":"13:45","arrivalDays":1,"originAirport":"CAN 白云","destinationAirport":"NRT 成田","duration":1095,"stops":1,"via":"XMN","quotes":[{"seller":"携程","price":1442.0,"note":"含税 · 搜索页","url":"https://flights.ctrip.com/online/list/oneway-can-tyo?depdate=2026-12-01&cabin=y&adult=1&child=0&infant=0"},{"seller":"Trip.com","price":1499.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=can&acity=tyo&ddate=2026-12-01&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]},{"numbers":["MF8326","MF809"],"airline":"厦门航空","departure":"18:20","arrival":"13:40","arrivalDays":1,"originAirport":"CAN 白云","destinationAirport":"NRT 成田","duration":1100,"stops":1,"via":"FOC","quotes":[{"seller":"携程","price":1442.0,"note":"含税 · 搜索页","url":"https://flights.ctrip.com/online/list/oneway-can-tyo?depdate=2026-12-01&cabin=y&adult=1&child=0&infant=0"},{"seller":"Trip.com","price":1499.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=can&acity=tyo&ddate=2026-12-01&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]},{"numbers":["MF8324","MF809"],"airline":"厦门航空","departure":"13:05","arrival":"13:40","arrivalDays":1,"originAirport":"CAN 白云","destinationAirport":"NRT 成田","duration":1415,"stops":1,"via":"FOC","quotes":[{"seller":"携程","price":1442.0,"note":"含税 · 搜索页","url":"https://flights.ctrip.com/online/list/oneway-can-tyo?depdate=2026-12-01&cabin=y&adult=1&child=0&infant=0"},{"seller":"Trip.com","price":1499.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=can&acity=tyo&ddate=2026-12-01&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"},{"seller":"同程旅行","price":2433.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/CAN-TYO?date=2026-12-01"}]},{"numbers":["MF8306","MF815"],"airline":"厦门航空","departure":"10:10","arrival":"13:45","arrivalDays":1,"originAirport":"CAN 白云","destinationAirport":"NRT 成田","duration":1595,"stops":1,"via":"XMN","quotes":[{"seller":"携程","price":1442.0,"note":"含税 · 搜索页","url":"https://flights.ctrip.com/online/list/oneway-can-tyo?depdate=2026-12-01&cabin=y&adult=1&child=0&infant=0"},{"seller":"Trip.com","price":1499.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=can&acity=tyo&ddate=2026-12-01&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]},{"numbers":["CZ3085"],"airline":"南方航空","departure":"15:10","arrival":"20:00","arrivalDays":0,"originAirport":"CAN 白云","destinationAirport":"HND 羽田","duration":230,"stops":0,"via":"","quotes":[{"seller":"同程旅行","price":2417.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/CAN-TYO?date=2026-12-01"},{"seller":"携程","price":2627.0,"note":"含税 · 搜索页","url":"https://flights.ctrip.com/online/list/oneway-can-tyo?depdate=2026-12-01&cabin=y&adult=1&child=0&infant=0"},{"seller":"Trip.com","price":2671.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=can&acity=tyo&ddate=2026-12-01&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]},{"numbers":["OZ358","OZ178"],"airline":"韩亚航空","departure":"01:15","arrival":"23:25","arrivalDays":0,"originAirport":"CAN 白云","destinationAirport":"HND 羽田","duration":1270,"stops":1,"via":"ICN","quotes":[{"seller":"同程旅行","price":1594.0,"note":"含税 · 搜索页","url":"https://flight.ly.com/travel/iflight/CAN-TYO?date=2026-12-01"},{"seller":"携程","price":1621.0,"note":"含税 · 搜索页","url":"https://flights.ctrip.com/online/list/oneway-can-tyo?depdate=2026-12-01&cabin=y&adult=1&child=0&infant=0"},{"seller":"Trip.com","price":1662.0,"note":"含税 · 搜索页","url":"https://www.trip.com/flights/showfarefirst?dcity=can&acity=tyo&ddate=2026-12-01&triptype=ow&class=y&quantity=1&locale=zh-CN&curr=CNY"}]}]}
+]</script>
+  <script>
+    "use strict";
+
+    const samples = JSON.parse(document.getElementById("sample-data").textContent);
+    const offline = location.protocol === "file:";
+    const pageSize = 20;
+    const state = { query: null, result: null, request: null, filter: "all", order: "price", demo: false };
+    const numberFormat = new Intl.NumberFormat("zh-CN", { maximumFractionDigits: 2 });
+    const sellers = {
+      "Trip.com": ["trip", "T"],
+      "同程旅行": ["ly", "同"],
+      "携程": ["ctrip", "携"]
+    };
+    const filters = {
+      all: { label: "全部", matches: () => true },
+      direct: { label: "仅直飞", matches: flight => flight.stops === 0, empty: "该日期暂无直飞报价" },
+      connecting: { label: "仅中转", matches: flight => flight.stops > 0, empty: "该日期暂无中转报价" },
+      compared: { label: "多渠道报价", matches: flight => flight.quotes.length > 1, empty: "暂无同航班多渠道报价" }
+    };
+    const sorters = {
+      price: (a, b) => a.quotes[0].price - b.quotes[0].price || a.duration - b.duration,
+      duration: (a, b) => a.duration - b.duration || a.quotes[0].price - b.quotes[0].price,
+      departure: (a, b) => a.departure.localeCompare(b.departure)
+    };
+    const ui = Object.fromEntries([
+      "search-form", "origin", "destination", "departure", "swap", "form-message",
+      "samples", "route-title", "result-status", "filters", "show-all",
+      "show-direct", "show-connecting", "show-compared", "show-more", "sort-order", "cards", "channels", "snapshot", "city-options",
+      "mode-badge", "search-button", "search-label", "file-hint", "route-references", "reference-list"
+    ].map(id => [id, document.getElementById(id)]));
+
+    function node(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined) element.textContent = text;
+      return element;
+    }
+
+    function amount(price) {
+      return "¥" + numberFormat.format(price);
+    }
+
+    function shortDate(date) {
+      const [, month, day] = date.split("-");
+      return Number(month) + "月" + Number(day) + "日";
+    }
+
+    function localDate(date) {
+      return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")].join("-");
+    }
+
+    function sellerMark(seller) {
+      const [key, initial] = sellers[seller] ?? ["other", Array.from(seller)[0]];
+      const mark = node("span", "seller-mark mark-" + key, initial);
+      mark.setAttribute("aria-hidden", "true");
+      return mark;
+    }
+
+    function addCityOption(value, label) {
+      const option = node("option", "", label);
+      option.value = value;
+      ui["city-options"].append(option);
+    }
+
+    function loadSample(sample) {
+      state.request?.abort();
+      setPending(null);
+      ui.origin.value = sample.origin;
+      ui.destination.value = sample.destination;
+      setError("");
+      state.query = state.result = sample;
+      state.demo = true;
+      state.filter = "all";
+      render();
+    }
+
+    function setError(message) {
+      ui["form-message"].textContent = message;
+      ui["form-message"].hidden = !message;
+    }
+
+    function setPending(request) {
+      state.request = request;
+      ui["search-button"].disabled = Boolean(request);
+      ui["search-label"].textContent = request ? "查价中…" : "实时查价";
+      ui.cards.setAttribute("aria-busy", String(Boolean(request)));
+    }
+
+    async function submitSearch() {
+      if (offline) {
+        ui["file-hint"].hidden = false;
+        return;
+      }
+      const query = { origin: ui.origin.value.trim(), destination: ui.destination.value.trim(), date: ui.departure.value };
+      if (!query.origin || !query.destination || !query.date) {
+        setError("请填写出发城市、到达城市和出发日期。");
+        return;
+      }
+      if (query.origin.toLowerCase() === query.destination.toLowerCase()) {
+        setError("请选择不同的出发和到达城市。");
+        return;
+      }
+      setError("");
+      state.request?.abort();
+      const request = new AbortController();
+      setPending(request);
+      state.query = query;
+      state.result = null;
+      state.demo = false;
+      state.filter = "all";
+      render();
+      const params = new URLSearchParams({ origin: query.origin, destination: query.destination, departure: query.date });
+      try {
+        const response = await fetch("/api/flights?" + params, { signal: request.signal, cache: "no-store" });
+        const data = await response.json();
+        if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "请检查城市和日期后重试。");
+        if (state.request !== request) return;
+        state.result = state.query = data;
+      } catch (error) {
+        if (state.request !== request) return;
+        setError(error instanceof TypeError ? "无法连接本地查价服务，请确认服务正在运行。" : error.message);
+      } finally {
+        if (state.request === request) {
+          setPending(null);
+          render();
+        }
+      }
+    }
+
+    function buildLink(quote) {
+      let url;
+      try { url = new URL(quote.url); } catch { /* Some sources return a price without a link. */ }
+      if (url?.protocol !== "https:") {
+        return node("span", "outbound-unavailable", "暂无链接");
+      }
+      const link = node("a", "outbound", state.demo ? "查看平台" : "去平台查价");
+      link.href = url.href;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.setAttribute("aria-label", "在新标签页打开" + quote.seller + "查价");
+      return link;
+    }
+
+    function buildQuote(quote, lowest, reference = false, nameText = quote.seller, note = quote.note) {
+      const row = node("div", reference ? "quote reference" : "quote");
+      const identity = node("div", "quote-identity");
+      const info = node("div");
+      const name = node("div", "quote-name", nameText);
+      if (lowest) name.append(node("span", "quote-lowest", "本组最低"));
+      info.append(name, node("p", "quote-sub", note || (reference ? "公开起价 · 参考" : "含税")));
+      identity.append(sellerMark(quote.seller), info);
+      const fromPrice = reference && quote.seller === "携程";
+      row.append(identity, node("span", "quote-price", amount(quote.price) + (fromPrice ? "起" : "")), buildLink(quote));
+      return row;
+    }
+
+    function endpoint(time, airport, dayOffset = 0) {
+      const outer = node("div", dayOffset ? "endpoint arrival" : "endpoint");
+      const timeRow = node("div");
+      timeRow.append(node("span", "clock", time));
+      if (dayOffset) {
+        const badge = node("span", "plus-day", (dayOffset > 0 ? "+" : "") + dayOffset + "天");
+        timeRow.append(badge);
+      }
+      outer.append(timeRow, node("p", "airport", airport));
+      return outer;
+    }
+
+    function durationLabel(minutes) {
+      const hours = Math.floor(minutes / 60);
+      const remainder = minutes % 60;
+      return (hours ? hours + "小时" : "") + (remainder ? remainder + "分" : "");
+    }
+
+    function buildCard(flight, open) {
+      const card = node("details", "flight");
+      card.open = open;
+      const summary = node("summary", "ticket");
+      const info = node("div", "ticket-info");
+      const carrier = node("div", "carrier");
+      const mark = node("span", "carrier-mark", flight.numbers[0].slice(0, 2));
+      mark.setAttribute("aria-hidden", "true");
+      carrier.append(mark, node("span", "", flight.airline), node("span", "flight-ids", flight.numbers.join(" + ")));
+      const schedule = node("div", "schedule");
+      const route = node("div", "route");
+      route.append(
+        node("div", "route-duration", durationLabel(flight.duration)),
+        node("div", "route-line"),
+        node("div", "route-label", flight.stops ? flight.stops + " 次中转" + (flight.via ? " · " + flight.via : "") : "直飞")
+      );
+      const arrive = endpoint(flight.arrival, flight.destinationAirport, flight.arrivalDays);
+      arrive.classList.add("arrival");
+      schedule.append(endpoint(flight.departure, flight.originAirport), route, arrive);
+      info.append(carrier, schedule);
+      const price = node("div", "ticket-price");
+      const fare = node("span", "fare");
+      fare.append(node("span", "amount-symbol", "¥"), numberFormat.format(flight.quotes[0].price));
+      const disclosure = node("span", "disclosure", open ? "收起报价" : "查看报价");
+      card.addEventListener("toggle", () => { disclosure.textContent = card.open ? "收起报价" : "查看报价"; });
+      price.append(node("span", "quote-label", flight.quotes.length > 1 ? "已查最低 · 含税" : "含税报价"), fare, disclosure);
+      summary.append(info, price);
+
+      const quotes = node("div", "quotes");
+      const heading = node("div", "quotes-title", flight.quotes.length + " 家含税报价");
+      const spread = flight.quotes.at(-1).price - flight.quotes[0].price;
+      if (flight.quotes.length > 1) heading.append(node("span", "spread", "最高与最低差 " + amount(spread)));
+      quotes.append(heading);
+      for (const quote of flight.quotes) {
+        quotes.append(buildQuote(quote, flight.quotes.length > 1 && quote.price === flight.quotes[0].price));
+      }
+      const references = flight.references ?? (flight.reference ? [flight.reference] : []);
+      quotes.append(...references.map(quote => buildQuote(quote, false, true)));
+      card.append(summary, quotes);
+      return card;
+    }
+
+    function renderChannels(result) {
+      const labels = {
+        quoted: "含税报价", reference: "参考价", empty: "暂无报价",
+        failed: "查询失败", unavailable: "该日期未查", pending: "查询中",
+        idle: "待查询", demoEmpty: "样本无报价", unconfigured: "待配置", domestic_only: "仅国内航线"
+      };
+      ui.channels.replaceChildren();
+      const names = result?.channels?.map(channel => channel.name) ?? Object.keys(sellers);
+      for (const name of names) {
+        let status = result?.channels?.find(channel => channel.name === name)?.status;
+        if (state.demo) {
+          const hasQuote = result.flights.some(flight => flight.quotes.some(quote => quote.seller === name));
+          const hasReference = name === "携程" && result.flights.some(flight => flight.reference);
+          status = hasQuote ? "quoted" : hasReference ? "reference" : "demoEmpty";
+        }
+        status ??= state.request ? "pending" : "idle";
+        const row = node("li");
+        const tagClass = status === "quoted" ? "source-tag" :
+          status === "reference" ? "source-tag reference-tag" : "source-tag neutral";
+        const identity = node("span", "source-name");
+        identity.append(sellerMark(name), node("span", "", name));
+        row.append(identity, node("span", tagClass, labels[status] || "状态未知"));
+        ui.channels.append(row);
+      }
+      ui.snapshot.textContent = !result ? "每次搜索会向渠道重新查价。" : state.demo
+        ? "历史样本 · 采集于 " + result.captured
+        : "查询时间 " + new Date(result.captured).toLocaleString("zh-CN");
+    }
+
+    function renderReferences(references) {
+      ui["route-references"].hidden = !references.length;
+      const rows = references.map(quote => buildQuote(quote, false, true,
+        quote.seller + " · " + quote.numbers.join(" + "),
+        quote.departure + " → " + quote.arrival + " · " + (quote.note || "公开起价")));
+      ui["reference-list"].replaceChildren(...rows);
+    }
+
+    function renderEmpty(title, description, action, handler) {
+      const box = node("div", "empty");
+      box.append(node("h3", "", title), node("p", "", description));
+      if (handler) {
+        const button = node("button", "filter", action);
+        button.type = "button";
+        button.addEventListener("click", handler);
+        box.append(button);
+      }
+      ui.cards.replaceChildren(box);
+    }
+
+    function render() {
+      const query = state.query;
+      const result = state.result;
+      ui["mode-badge"].hidden = !query;
+      ui["mode-badge"].textContent = state.demo ? "历史样本" : state.request ? "实时查询中" : "实时查询";
+      ui["route-title"].textContent = query ? query.origin + " → " + query.destination : "航班报价";
+      const available = result?.flights ?? [];
+      for (const [key, filter] of Object.entries(filters)) {
+        const button = ui["show-" + key];
+        button.setAttribute("aria-pressed", String(state.filter === key));
+        button.replaceChildren(filter.label, node("span", "filter-count", String(available.filter(filter.matches).length)));
+      }
+      for (const [index, button] of [...ui.samples.querySelectorAll("button")].entries()) {
+        button.setAttribute("aria-pressed", String(state.demo && result === samples[index]));
+      }
+      ui.filters.hidden = !result?.flights.length;
+      ui["show-more"].hidden = true;
+      renderChannels(result);
+      renderReferences(result?.references || []);
+      const conditions = query ? query.date + " 出发" : "单程 · 1 位成人 · 经济舱";
+      ui["result-status"].textContent = conditions;
+      if (!query) {
+        renderEmpty("搜索航班", "输入出发和到达城市，选择日期后查询各渠道报价。");
+        return;
+      }
+      if (state.request) {
+        renderEmpty("正在查询各渠道", "价格返回后会按航班归在一起。");
+        return;
+      }
+      if (!result) {
+        renderEmpty("没有返回查询结果", "检查上方提示后，可以修改条件重新查询。");
+        return;
+      }
+      if (!result.flights.length) {
+        const failed = result.channels?.some(channel => channel.status === "failed");
+        const hasReferences = Boolean(result.references?.length);
+        renderEmpty(failed ? "本次未能取得含税报价" : "暂无含税报价",
+          hasReferences ? "下方有该航线的参考报价，可到原平台确认票价。" :
+            failed ? "请查看各渠道状态，稍后可重新查价。" : "可以换一个出发日期再搜。");
+        return;
+      }
+      const filter = filters[state.filter];
+      const flights = available.filter(filter.matches).sort(sorters[state.order]);
+      const compared = flights.filter(flight => flight.quotes.length > 1).length;
+      ui["result-status"].textContent = conditions + " · " + flights.length + (state.demo ? " 个样本行程" : " 个行程")
+        + " · " + compared + " 个有多渠道报价";
+      if (!flights.length) {
+        renderEmpty(filter.empty, "可查看同日其他报价。", "查看全部", () => selectFilter("all"));
+        return;
+      }
+      const pendingFlights = flights.slice(pageSize);
+      ui.cards.replaceChildren(...flights.slice(0, pageSize).map((flight, index) => buildCard(flight, index === 0)));
+      const more = ui["show-more"];
+      more.hidden = !pendingFlights.length;
+      more.onclick = () => {
+        const cards = pendingFlights.splice(0, pageSize).map(flight => buildCard(flight, false));
+        ui.cards.append(...cards);
+        more.hidden = !pendingFlights.length;
+        cards[0]?.querySelector("summary").focus();
+      };
+    }
+
+    function selectFilter(value) {
+      state.filter = value;
+      render();
+    }
+
+    function populateCities(cities) {
+      for (const city of cities) {
+        addCityOption(city.name, city.code);
+        for (const code of new Set([city.code, ...city.airports, ...city.aliases])) {
+          addCityOption(code, city.name);
+        }
+      }
+    }
+
+    for (const sample of samples) {
+      const button = node("button", "", sample.origin + " → " + sample.destination + " · " + shortDate(sample.date));
+      button.type = "button";
+      button.addEventListener("click", () => loadSample(sample));
+      ui.samples.append(button);
+    }
+    ui["search-form"].addEventListener("submit", event => {
+      event.preventDefault();
+      void submitSearch();
+    });
+    ui.swap.addEventListener("click", () => {
+      [ui.origin.value, ui.destination.value] = [ui.destination.value, ui.origin.value];
+      setError("");
+    });
+    for (const key of Object.keys(filters)) ui["show-" + key].addEventListener("click", () => selectFilter(key));
+    ui["sort-order"].addEventListener("change", () => {
+      state.order = ui["sort-order"].value;
+      render();
+    });
+    const tomorrow = new Date();
+    ui.departure.min = localDate(tomorrow);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    ui.departure.value = localDate(tomorrow);
+    ui["file-hint"].hidden = !offline;
+    loadSample(samples[0]);
+    if (!offline) {
+      fetch("/api/cities").then(response => {
+        if (!response.ok) throw new Error();
+        return response.json();
+      }).then(populateCities).catch(() => {
+        if (!state.request && ui["form-message"].hidden) setError("城市联想暂不可用，仍可直接输入城市名或代码。");
+      });
+    }
+  </script>
+</body>
+</html>

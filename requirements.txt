@@ -1,0 +1,7 @@
+requests>=2.31
+curl_cffi>=0.7
+fast-flights>=2.2
+selectolax>=0.3.21
+playwright>=1.40
+fastapi
+uvicorn

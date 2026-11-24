@@ -1,0 +1,299 @@
+{
+  "上海": {
+    "country": "CN",
+    "code": "SHA",
+    "airports": [
+      "SHA",
+      "PVG"
+    ],
+    "aliases": [
+      "Shanghai"
+    ]
+  },
+  "北京": {
+    "country": "CN",
+    "code": "BJS",
+    "airports": [
+      "PEK",
+      "PKX"
+    ],
+    "aliases": [
+      "Beijing"
+    ]
+  },
+  "广州": {
+    "country": "CN",
+    "code": "CAN",
+    "airports": [
+      "CAN"
+    ],
+    "aliases": [
+      "Guangzhou"
+    ]
+  },
+  "深圳": {
+    "country": "CN",
+    "code": "SZX",
+    "airports": [
+      "SZX"
+    ],
+    "aliases": [
+      "Shenzhen"
+    ]
+  },
+  "杭州": {
+    "country": "CN",
+    "code": "HGH",
+    "airports": [
+      "HGH"
+    ],
+    "aliases": [
+      "Hangzhou"
+    ]
+  },
+  "南京": {
+    "country": "CN",
+    "code": "NKG",
+    "airports": [
+      "NKG"
+    ],
+    "aliases": [
+      "Nanjing"
+    ]
+  },
+  "成都": {
+    "country": "CN",
+    "code": "CTU",
+    "airports": [
+      "CTU",
+      "TFU"
+    ],
+    "aliases": [
+      "Chengdu"
+    ]
+  },
+  "重庆": {
+    "country": "CN",
+    "code": "CKG",
+    "airports": [
+      "CKG"
+    ],
+    "aliases": [
+      "Chongqing"
+    ]
+  },
+  "西安": {
+    "country": "CN",
+    "code": "XIY",
+    "airports": [
+      "XIY"
+    ],
+    "aliases": [
+      "Xian",
+      "Xi'an"
+    ]
+  },
+  "武汉": {
+    "country": "CN",
+    "code": "WUH",
+    "airports": [
+      "WUH"
+    ],
+    "aliases": [
+      "Wuhan"
+    ]
+  },
+  "昆明": {
+    "country": "CN",
+    "code": "KMG",
+    "airports": [
+      "KMG"
+    ],
+    "aliases": [
+      "Kunming"
+    ]
+  },
+  "南宁": {
+    "country": "CN",
+    "code": "NNG",
+    "airports": [
+      "NNG"
+    ],
+    "aliases": [
+      "Nanning"
+    ]
+  },
+  "河内": {
+    "country": "VN",
+    "code": "HAN",
+    "airports": [
+      "HAN"
+    ],
+    "aliases": [
+      "Hanoi",
+      "Hà Nội"
+    ]
+  },
+  "胡志明市": {
+    "country": "VN",
+    "code": "SGN",
+    "airports": [
+      "SGN"
+    ],
+    "aliases": [
+      "Ho Chi Minh City",
+      "Saigon",
+      "西贡",
+      "胡志明"
+    ]
+  },
+  "岘港": {
+    "country": "VN",
+    "code": "DAD",
+    "airports": [
+      "DAD"
+    ],
+    "aliases": [
+      "Da Nang",
+      "Danang"
+    ]
+  },
+  "芽庄": {
+    "country": "VN",
+    "code": "CXR",
+    "airports": [
+      "CXR"
+    ],
+    "aliases": [
+      "Nha Trang"
+    ]
+  },
+  "富国岛": {
+    "country": "VN",
+    "code": "PQC",
+    "airports": [
+      "PQC"
+    ],
+    "aliases": [
+      "Phu Quoc"
+    ]
+  },
+  "顺化": {
+    "country": "VN",
+    "code": "HUI",
+    "airports": [
+      "HUI"
+    ],
+    "aliases": [
+      "Hue"
+    ]
+  },
+  "曼谷": {
+    "country": "TH",
+    "code": "BKK",
+    "airports": [
+      "BKK",
+      "DMK"
+    ],
+    "aliases": [
+      "Bangkok"
+    ]
+  },
+  "新加坡": {
+    "country": "SG",
+    "code": "SIN",
+    "airports": [
+      "SIN"
+    ],
+    "aliases": [
+      "Singapore"
+    ]
+  },
+  "东京": {
+    "country": "JP",
+    "code": "TYO",
+    "airports": [
+      "HND",
+      "NRT"
+    ],
+    "aliases": [
+      "Tokyo",
+      "東京"
+    ]
+  },
+  "大阪": {
+    "country": "JP",
+    "code": "OSA",
+    "airports": [
+      "KIX"
+    ],
+    "aliases": [
+      "Osaka",
+      "大阪市"
+    ]
+  },
+  "名古屋": {
+    "country": "JP",
+    "code": "NGO",
+    "airports": [
+      "NGO"
+    ],
+    "aliases": [
+      "Nagoya"
+    ]
+  },
+  "福冈": {
+    "country": "JP",
+    "code": "FUK",
+    "airports": [
+      "FUK"
+    ],
+    "aliases": [
+      "Fukuoka"
+    ]
+  },
+  "札幌": {
+    "country": "JP",
+    "code": "SPK",
+    "airports": [
+      "CTS"
+    ],
+    "aliases": [
+      "Sapporo",
+      "新千岁"
+    ]
+  },
+  "冲绳": {
+    "country": "JP",
+    "code": "OKA",
+    "airports": [
+      "OKA"
+    ],
+    "aliases": [
+      "Okinawa",
+      "那霸",
+      "Naha"
+    ]
+  },
+  "莫斯科": {
+    "country": "RU",
+    "code": "MOW",
+    "airports": ["SVO", "DME", "VKO", "ZIA"],
+    "aliases": ["Moscow", "MOW", "莫斯科市", "Москва"]
+  },
+  "伦敦": {
+    "country": "GB",
+    "code": "LON",
+    "airports": [
+      "LHR",
+      "LGW",
+      "STN",
+      "LTN",
+      "LCY"
+    ],
+    "aliases": [
+      "London",
+      "倫敦"
+    ]
+  }
+}
